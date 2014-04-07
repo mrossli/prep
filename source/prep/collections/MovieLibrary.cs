@@ -14,17 +14,37 @@ namespace prep.collections
 
     public IEnumerable<Movie> all_movies()
     {
-      return this.movies;
+        foreach (var movie in movies) yield return movie;
     }
 
     public void add(Movie movie)
     {
-      throw new NotImplementedException();
+        if (!movies.Contains(movie))
+            movies.Add(movie);
     }
-    
-    public IEnumerable<Movie> all_movies_published_by_pixar()
+
+      private delegate bool MovieCondition(Movie movie);
+
+      private IEnumerable<Movie> all_movies_matching(MovieCondition condition)
+      {
+          foreach (Movie movie in movies)
+          {
+              if (condition(movie))
+                  yield return movie;
+          }
+      }
+
+      public IEnumerable<Movie> all_movies_published_by_pixar()
     {
-      throw new NotImplementedException();
+      var moviesByPixar = new List<Movie>();
+        
+        foreach (var movie in movies)
+        {
+            if (movie.production_studio == ProductionStudio.Pixar)
+                moviesByPixar.Add(movie);
+        }
+        
+        return moviesByPixar;
     }
 
     public IEnumerable<Movie> all_movies_published_by_pixar_or_disney()
